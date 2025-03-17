@@ -10,123 +10,124 @@ namespace FileAnalyzer
 {
     public class Methods
     {
-        public string girisEkran()
+
+        public string loginMenu()
         {
-            Console.WriteLine("Hangi dosya türünü analiz etmek istersiniz?");
+            Console.WriteLine("Which file type?");
             Console.WriteLine("-------------");
             Console.WriteLine("| 1- Text   |");
             Console.WriteLine("| 2- Pdf    |");
             Console.WriteLine("| 3- Word   |");
             Console.WriteLine("-------------");
-            Console.WriteLine("Seçiminizi yapınız: ");
+            Console.WriteLine("Choose: ");
             return null;
         }
-        public string DosyaTercih(int tercih)
+        public string filePrefer(int prefer)
         {
             OpenFileDialog of = new OpenFileDialog();
 
-            switch (tercih)
+            switch (prefer)
             {
                 case 1:
-                    of.Filter = "Text Dosyaları|*.txt";
-                    Console.WriteLine("Text Dosyası Seçildi");
+                    of.Filter = "Text Files|*.txt";
+                    Console.WriteLine("txt file selected.");
                     break;
                 case 2:
-                    of.Filter = "Pdf Dosyaları|*.pdf";
-                    Console.WriteLine("Pdf Dosyası Seçildi");
+                    of.Filter = "Pdf Files|*.pdf";
+                    Console.WriteLine("pdf file selected.");
                     break;
                 case 3:
-                    of.Filter = "Word Dosyaları|*.docx";
-                    Console.WriteLine("Word Dosyası Seçildi");
+                    of.Filter = "Word Files|*.docx";
+                    Console.WriteLine("docx file selected");
                     break;
                 default:
-                    Console.WriteLine("Geçersiz Seçim");
+                    Console.WriteLine("Wrong Choice");
                     return null;
             }
             if (of.ShowDialog() == DialogResult.OK)
             {
-                Console.WriteLine("Seçilen Dosya: " + of.FileName);
+                Console.WriteLine("Selected File: " + of.FileName);
                 return of.FileName;
             }
             
             
-            Console.WriteLine("Dosya Seçilmedi");
+            Console.WriteLine("Not Selected File");
             return null;
             
             
 
 
         }
-        public int baglacSay(string file, int tercih)
+        public int conjunctionSay(string file, int prefer)
         {
-            string[] baglaclar = { "ve", "veya", "ama", "fakat", "ancak", "çünkü", "ile", "zira" };
-            if (tercih == 1)
+            string[] conjunctions = { "ve", "veya", "ama", "fakat", "ancak", "çünkü", "ile", "zira" };
+            if (prefer == 1)
             {
                 
-                int sayac = 0;
+                int counter = 0;
                 foreach (var item in File.ReadAllLines(file))
                 {
-                    foreach (var baglac in baglaclar)
+                    foreach (var conjunction in conjunctions)
                     {
-                        if (item.Contains(baglac))
+                        if (item.Contains(conjunction))
                         {
-                            sayac++;
+                            counter++;
                         }
                     }
                 }
-                return sayac;
+                return counter;
             }
-            else if (tercih == 2)
+            else if (prefer == 2)
             {
-                int sayac = 0;
+                int counter = 0;
                 Aspose.Pdf.Document pdfDocument = new Aspose.Pdf.Document(file);
                 TextAbsorber textAbsorber = new TextAbsorber();
                 for(int i =1; i <= pdfDocument.Pages.Count; i++)
                 {
                     pdfDocument.Pages[i].Accept(textAbsorber);
                     string pageText = textAbsorber.Text;
-                    foreach (var baglac in baglaclar)
+                    foreach (var conjunction in conjunctions)
                     {
                         int index = 0;
-                        while ((index = pageText.IndexOf(baglac, index, StringComparison.OrdinalIgnoreCase)) != -1)
+                        while ((index = pageText.IndexOf(conjunction, index, StringComparison.OrdinalIgnoreCase)) != -1)
                         {
-                            sayac++;
-                            index += baglac.Length;  // Sonraki arama için indeksi güncelliyoruz
+                            counter++;
+                            index += conjunction.Length;  // Sonraki arama için indeksi güncelliyoruz
                         }
 
                     }
                 }
-                return sayac;
+                return counter;
 
             }
-            else if (tercih == 3)
+            else if (prefer == 3)
             {
-                int sayac = 0;
+                int counter = 0;
                 Aspose.Words.Document wordDocument = new Aspose.Words.Document(file); // Aspose.Words.Document kullanıyoruz
                 foreach (Aspose.Words.Paragraph paragraph in wordDocument.GetChildNodes(NodeType.Paragraph, true))
                 {
                     string paragraphText = paragraph.Range.Text; // Paragrafları metne dönüştürüyoruz
-                    foreach (var baglac in baglaclar)
+                    foreach (var conjunction in conjunctions)
                     {
                         int index = 0;
-                        while ((index = paragraphText.IndexOf(baglac, index, StringComparison.OrdinalIgnoreCase)) != -1)
+                        while ((index = paragraphText.IndexOf(conjunction, index, StringComparison.OrdinalIgnoreCase)) != -1)
                         {
-                            sayac++;
-                            index += baglac.Length;  // Sonraki arama için indeksi güncelliyoruz
+                            counter++;
+                            index += conjunction.Length;  // Sonraki arama için indeksi güncelliyoruz
                         }
                     }
                 }
-                return sayac;
+                return counter;
             }
                 return 0;
         }
 
-        public int sayiSay(string file, int tercih)
+        public int numberSay(string file, int prefer)
         {
-            string[] sayi = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-            if (tercih == 1)
+            string[] number = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+            if (prefer == 1)
             {
-                int sayac = 0;
+                int counter = 0;
                 foreach (var item in File.ReadAllLines(file))
                 {
                     string[] words = item.Split(' ');
@@ -134,15 +135,15 @@ namespace FileAnalyzer
                     {
                         if (s.All(char.IsDigit))
                         {
-                            sayac++;
+                            counter++;
                         }
                     }
                 }
-                return sayac;
+                return counter;
             }
-            else if (tercih == 2)
+            else if (prefer == 2)
             {
-                int sayac = 0;
+                int counter = 0;
                 Aspose.Pdf.Document pdfDocument = new Aspose.Pdf.Document(file);
                 TextAbsorber textAbsorber = new TextAbsorber();
                 for (int i = 1; i <= pdfDocument.Pages.Count; i++)
@@ -150,19 +151,19 @@ namespace FileAnalyzer
                     pdfDocument.Pages[i].Accept(textAbsorber);
                     string pageText = textAbsorber.Text;
                     string[] words = pageText.Split(' ');
-                    foreach (var s in sayi)
+                    foreach (var s in number)
                     {
                         if (s.All(char.IsDigit))
                         {
-                            sayac++;
+                            counter++;
                         }
                     }
                 }
-                return sayac;
+                return counter;
             }
-            else if (tercih == 3) // Word dosyası için
+            else if (prefer == 3) // Word dosyası için
             {
-                int sayac = 0;
+                int counter = 0;
                 Aspose.Words.Document wordDocument = new Aspose.Words.Document(file);
 
                 // Word dosyasındaki tüm metni paragraf paragraf okuyalım
@@ -176,53 +177,53 @@ namespace FileAnalyzer
                     {
                         if (s.All(char.IsDigit))
                         {
-                            sayac++;
+                            counter++;
                         }
                     }
                 }
 
-                return sayac;
+                return counter;
             }
             return 0;
         }
 
-        public void toplamKelimeSay(string file, int tercih)
+        public void totalWordSay(string file, int prefer)
         {
-            int baglacSayisi = baglacSay(file, tercih);
-            int sayiSayisi = sayiSay(file, tercih);
-            int noktalamaSayisi = noktalamaSay(file, tercih);
-            int cumleSayisi = cumleSay(file, tercih);
-            HashSet<string> kelimelerSeti = new HashSet<string>();
+            int consuctionTotal = conjunctionSay(file, prefer);
+            int numberTotal = numberSay(file, prefer);
+            int punctuationTotal = punctuationSay(file, prefer);
+            int sentenceTotal = sentenceSay(file, prefer);
+            HashSet<string> wordSet = new HashSet<string>();
             
-            if (tercih == 1)
+            if (prefer == 1)
             {
-                int toplamKelimeSayisi = 0;
+                int totalWordSay = 0;
                 foreach (var item in File.ReadAllLines(file))
                 {
                     string[] words = item.Split(new char[] { ' ', '.', ',', '?', '!', ':', ';', '-', '_', '(', ')', '[', ']', '{', '}', '<', '>', '/', '\\', '|', '*', '+', '=', '&', '%', '$', '#', '@', '^', '~', '`' }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var word in words)
                     {
-                        kelimelerSeti.Add(word.ToLower());
+                        wordSet.Add(word.ToLower());
                     }
                 }
-                toplamKelimeSayisi = kelimelerSeti.Count;
+                totalWordSay = wordSet.Count;
                 
                 
-                Console.WriteLine("------------TOPLAM------------");
-                    Console.WriteLine((toplamKelimeSayisi - baglacSayisi - sayiSayisi)+" benzersiz kelime,");
-                Console.WriteLine(cumleSayisi + " cümle,");
-                Console.WriteLine(sayiSayisi + " sayı,");
-                Console.WriteLine(noktalamaSayisi + " noktalama işareti,");
-                Console.WriteLine(baglacSayisi + " bağlaç,");
+                Console.WriteLine("------------TOTAL------------");
+                    Console.WriteLine((totalWordSay - consuctionTotal - numberTotal)+" benzersiz kelime,");
+                Console.WriteLine(sentenceTotal + " cümle,");
+                Console.WriteLine(numberTotal + " sayı,");
+                Console.WriteLine(punctuationTotal + " noktalama işareti,");
+                Console.WriteLine(consuctionTotal + " bağlaç,");
                 Console.WriteLine("kullanılmıştır.");
                 Console.WriteLine("------------------------------");
                 Console.WriteLine(" Benzersiz kelime sayısına, bağlaçlar ve sayılar dahil edilmemiştir.");
                 Console.WriteLine("------------------------------");
 
             }
-            else if (tercih == 2) // PDF dosyası için
+            else if (prefer == 2) // PDF dosyası için
             {
-                int toplamKelimeSayisi = 0;
+                int totalWordSay = 0;
                 Aspose.Pdf.Document pdfDocument = new Aspose.Pdf.Document(file);
                 TextAbsorber textAbsorber = new TextAbsorber();
 
@@ -233,24 +234,24 @@ namespace FileAnalyzer
                     string[] words = pageText.Split(new char[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var word in words)
                     {
-                        kelimelerSeti.Add(word.ToLower());
+                        wordSet.Add(word.ToLower());
                     }
                 }
-                toplamKelimeSayisi = kelimelerSeti.Count;
-                Console.WriteLine("------------TOPLAM------------");
-                Console.WriteLine((toplamKelimeSayisi - baglacSayisi - sayiSayisi) + " benzersiz kelime,");
-                Console.WriteLine(cumleSayisi + " cümle,");
-                Console.WriteLine(sayiSayisi + " sayı,");
-                Console.WriteLine(noktalamaSayisi + " noktalama işareti,");
-                Console.WriteLine(baglacSayisi + " bağlaç,");
+                totalWordSay = wordSet.Count;
+                Console.WriteLine("------------TOTAL------------");
+                Console.WriteLine((totalWordSay - consuctionTotal - numberTotal) + " benzersiz kelime,");
+                Console.WriteLine(sentenceTotal + " cümle,");
+                Console.WriteLine(numberTotal + " sayı,");
+                Console.WriteLine(punctuationTotal + " noktalama işareti,");
+                Console.WriteLine(consuctionTotal + " bağlaç,");
                 Console.WriteLine("kullanılmıştır.");
                 Console.WriteLine("------------------------------");
                 Console.WriteLine(" Benzersiz kelime sayısına, bağlaçlar ve sayılar dahil edilmemiştir.");
                 Console.WriteLine("------------------------------");
             }
-            else if (tercih == 3) // Word dosyası için
+            else if (prefer == 3) // Word dosyası için
             {
-                int toplamKelimeSayisi = 0;
+                int totalWordSay = 0;
                 Aspose.Words.Document wordDocument = new Aspose.Words.Document(file);
 
                 // Word dosyasındaki tüm metni paragraf paragraf okuyalım
@@ -262,16 +263,16 @@ namespace FileAnalyzer
                     string[] words = paragraphText.Split(new char[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var word in words)
                     {
-                        kelimelerSeti.Add(word.ToLower());
+                        wordSet.Add(word.ToLower());
                     }
                 }
-                toplamKelimeSayisi = kelimelerSeti.Count;
-                Console.WriteLine("------------TOPLAM------------");
-                Console.WriteLine((toplamKelimeSayisi - baglacSayisi - sayiSayisi) + " benzersiz kelime,");
-                Console.WriteLine(cumleSayisi + " cümle,");
-                Console.WriteLine(sayiSayisi + " sayı,");
-                Console.WriteLine(noktalamaSayisi + " noktalama işareti,");
-                Console.WriteLine(baglacSayisi + " bağlaç,");
+                totalWordSay = wordSet.Count;
+                Console.WriteLine("------------TOTAL------------");
+                Console.WriteLine((totalWordSay - consuctionTotal - numberTotal) + " benzersiz kelime,");
+                Console.WriteLine(sentenceTotal + " cümle,");
+                Console.WriteLine(numberTotal + " sayı,");
+                Console.WriteLine(punctuationTotal + " noktalama işareti,");
+                Console.WriteLine(consuctionTotal + " bağlaç,");
                 Console.WriteLine("kullanılmıştır.");
                 Console.WriteLine("------------------------------");
                 Console.WriteLine(" Benzersiz kelime sayısına, bağlaçlar ve sayılar dahil edilmemiştir.");
@@ -280,22 +281,22 @@ namespace FileAnalyzer
 
         }
 
-        public int cumleSay(string file, int tercih)
+        public int sentenceSay(string file, int prefer)
         {
 
-            if (tercih == 1)
+            if (prefer == 1)
             {
-                int sayac = 0;
+                int counter = 0;
                 foreach (var item in File.ReadAllLines(file))
                 {
-                    string[] cumleler = item.Split(new char[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
-                    sayac += cumleler.Length;
+                    string[] sentences = item.Split(new char[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
+                    counter += sentences.Length;
                 }
-                return sayac;
+                return counter;
             }
-            else if (tercih == 2) // PDF dosyası için
+            else if (prefer == 2) // PDF dosyası için
             {
-                int sayac = 0;
+                int counter = 0;
                 Aspose.Pdf.Document pdfDocument = new Aspose.Pdf.Document(file);
                 TextAbsorber textAbsorber = new TextAbsorber();
                 for (int i = 1; i <= pdfDocument.Pages.Count; i++)
@@ -303,14 +304,14 @@ namespace FileAnalyzer
                     pdfDocument.Pages[i].Accept(textAbsorber);
                     string pageText = textAbsorber.Text;
                     // Cümleleri ayırmak için nokta, ünlem, soru işareti kullanıyoruz
-                    string[] cumleler = pageText.Split(new char[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
-                    sayac += cumleler.Length;
+                    string[] sentences = pageText.Split(new char[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
+                    counter += sentences.Length;
                 }
-                return sayac;
+                return counter;
             }
-            else if (tercih == 3) // Word dosyası için
+            else if (prefer == 3) // Word dosyası için
             {
-                int sayac = 0;
+                int counter = 0;
                 Aspose.Words.Document wordDocument = new Aspose.Words.Document(file);
 
                 // Word dosyasındaki tüm metni paragraf paragraf okuyalım
@@ -318,38 +319,38 @@ namespace FileAnalyzer
                 {
                     string paragraphText = paragraph.Range.Text;
                     // Cümleleri ayırmak için nokta, ünlem, soru işareti kullanıyoruz
-                    string[] cumleler = paragraphText.Split(new char[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
-                    sayac += cumleler.Length;
+                    string[] sentences = paragraphText.Split(new char[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
+                    counter += sentences.Length;
                 }
 
-                return sayac;
+                return counter;
             }
             else
             {
                 return 0;
             }
         }
-        public int noktalamaSay(string file, int tercih)
+        public int punctuationSay(string file, int prefer)
         {
-            char[] noktalama = new char[] { '.', ',', '?', '!', ':', ';', '-', '_', '(', ')', '[', ']', '{', '}', '<', '>', '/', '\\', '|', '*', '+', '=', '&', '%', '$', '#', '@', '^', '~', '`' };
-            if (tercih == 1)
+            char[] punctuations = new char[] { '.', ',', '?', '!', ':', ';', '-', '_', '(', ')', '[', ']', '{', '}', '<', '>', '/', '\\', '|', '*', '+', '=', '&', '%', '$', '#', '@', '^', '~', '`' };
+            if (prefer == 1)
             {
-                int sayac = 0;
+                int counter = 0;
                 foreach (var item in File.ReadAllLines(file))
                 {
                     foreach (var c in item)
                     {
-                        if (noktalama.Contains(c))
+                        if (punctuations.Contains(c))
                         {
-                            sayac++;
+                            counter++;
                         }
                     }
                 }
-                return sayac;
+                return counter;
             }
-            else if (tercih == 2) // PDF dosyası için
+            else if (prefer == 2) // PDF dosyası için
             {
-                int sayac = 0;
+                int counter = 0;
                 Aspose.Pdf.Document pdfDocument = new Aspose.Pdf.Document(file);
                 TextAbsorber textAbsorber = new TextAbsorber();
                 for (int i = 1; i <= pdfDocument.Pages.Count; i++)
@@ -358,17 +359,17 @@ namespace FileAnalyzer
                     string pageText = textAbsorber.Text;
                     foreach (var c in pageText)
                     {
-                        if (noktalama.Contains(c))
+                        if (punctuations.Contains(c))
                         {
-                            sayac++;
+                            counter++;
                         }
                     }
                 }
-                return sayac;
+                return counter;
             }
-            else if (tercih == 3) // Word dosyası için
+            else if (prefer == 3) // Word dosyası için
             {
-                int sayac = 0;
+                int counter = 0;
                 Aspose.Words.Document wordDocument = new Aspose.Words.Document(file);
                 // Word dosyasındaki tüm metni paragraf paragraf okuyalım
                 foreach (Aspose.Words.Paragraph paragraph in wordDocument.GetChildNodes(Aspose.Words.NodeType.Paragraph, true))
@@ -376,13 +377,13 @@ namespace FileAnalyzer
                     string paragraphText = paragraph.Range.Text;
                     foreach (var c in paragraphText)
                     {
-                        if (noktalama.Contains(c))
+                        if (punctuations.Contains(c))
                         {
-                            sayac++;
+                            counter++;
                         }
                     }
                 }
-                return sayac;
+                return counter;
             }
             else
             {
@@ -390,33 +391,33 @@ namespace FileAnalyzer
             }
         }
 
-        public void kelimeSay(string file, int tercih)
+        public void wordSay(string file, int prefer)
         {
-            char[] noktalama = new char[] { ' ', '.', ',', '?', '!', ':', ';', '-', '_', '(', ')', '[', ']', '{', '}', '<', '>', '/', '\\', '|', '*', '+', '=', '&', '%', '$', '#', '@', '^', '~', '`' };
+            char[] punctuation = new char[] { ' ', '.', ',', '?', '!', ':', ';', '-', '_', '(', ')', '[', ']', '{', '}', '<', '>', '/', '\\', '|', '*', '+', '=', '&', '%', '$', '#', '@', '^', '~', '`' };
 
-            if (tercih == 1)
+            if (prefer == 1)
             {
-                string metin = File.ReadAllText(file);
-                string temizle = new string(metin.Select(c => noktalama.Contains(c) && c != ' ' ? ' ' : c).ToArray());
+                string text = File.ReadAllText(file);
+                string clear = new string(text.Select(c => punctuation.Contains(c) && c != ' ' ? ' ' : c).ToArray());
 
-                string[] words = temizle.Split(new char[] { ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                Dictionary<string, int> kelimeSay = new Dictionary<string, int>();
-                foreach (string kelimeler in words)
+                string[] word = clear.Split(new char[] { ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                Dictionary<string, int> wordSay = new Dictionary<string, int>();
+                foreach (string words in word)
                 {
-                    if (kelimeler.All(c => Char.IsLetter(c)))
+                    if (words.All(c => Char.IsLetter(c)))
                     {
-                        if (kelimeSay.ContainsKey(kelimeler))
+                        if (wordSay.ContainsKey(words))
                         {
-                            kelimeSay[kelimeler]++;
+                            wordSay[words]++;
                         }
                         else
                         {
-                            kelimeSay.Add(kelimeler, 1);
+                            wordSay.Add(words, 1);
                         }
                     }
                 }
-                var sortedKelimeSay = kelimeSay.OrderByDescending(kv => kv.Value).ToList();
-                foreach (var item in sortedKelimeSay)
+                var sortedWordSay = wordSay.OrderByDescending(kv => kv.Value).ToList();
+                foreach (var item in sortedWordSay)
                 {
                     if (item.Value > 1)
                     {
@@ -425,7 +426,7 @@ namespace FileAnalyzer
                 }
                 Console.WriteLine("defa kullanılmıştır.");
             }
-            else if (tercih == 2) // PDF dosyası için
+            else if (prefer == 2) // PDF dosyası için
             {
                 string text = string.Empty;
                 Aspose.Pdf.Document pdfDocument = new Aspose.Pdf.Document(file);
@@ -436,26 +437,26 @@ namespace FileAnalyzer
                     text += textAbsorber.Text;
                 }
 
-                string temizle = new string(text.Select(c => noktalama.Contains(c) && c != ' ' ? ' ' : c).ToArray());
-                string[] words = temizle.Split(new char[] { ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                string clear = new string(text.Select(c => punctuation.Contains(c) && c != ' ' ? ' ' : c).ToArray());
+                string[] words = clear.Split(new char[] { ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-                Dictionary<string, int> kelimeSay = new Dictionary<string, int>();
-                foreach (string kelimeler in words)
+                Dictionary<string, int> wordSay = new Dictionary<string, int>();
+                foreach (string word in words)
                 {
-                    if (kelimeler.All(c => Char.IsLetter(c)))
+                    if (word.All(c => Char.IsLetter(c)))
                     {
-                        if (kelimeSay.ContainsKey(kelimeler))
+                        if (wordSay.ContainsKey(word))
                         {
-                            kelimeSay[kelimeler]++;
+                            wordSay[word]++;
                         }
                         else
                         {
-                            kelimeSay.Add(kelimeler, 1);
+                            wordSay.Add(word, 1);
                         }
                     }
                 }
-                var sortedKelimeSay = kelimeSay.OrderByDescending(kv => kv.Value).ToList();
-                foreach (var item in sortedKelimeSay)
+                var sortedWordSay = wordSay.OrderByDescending(kv => kv.Value).ToList();
+                foreach (var item in sortedWordSay)
                 {
                     if (item.Value > 1)
                     {
@@ -464,7 +465,7 @@ namespace FileAnalyzer
                 }
                 Console.WriteLine("defa kullanılmıştır.");
             }
-            else if (tercih == 3) // Word dosyası için
+            else if (prefer == 3) // Word dosyası için
             {
                 string text = string.Empty;
                 Aspose.Words.Document wordDocument = new Aspose.Words.Document(file);
@@ -475,23 +476,23 @@ namespace FileAnalyzer
                     text += paragraph.Range.Text;
                 }
 
-                string temizle = new string(text.Select(c => noktalama.Contains(c) && c != ' ' ? ' ' : c).ToArray());
-                string[] words = temizle.Split(new char[] { ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                string clear = new string(text.Select(c => punctuation.Contains(c) && c != ' ' ? ' ' : c).ToArray());
+                string[] words = clear.Split(new char[] { ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-                Dictionary<string, int> kelimeSay = new Dictionary<string, int>();
-                foreach (string kelimeler in words)
+                Dictionary<string, int> wordSay = new Dictionary<string, int>();
+                foreach (string word in words)
                 {
-                    if (kelimeSay.ContainsKey(kelimeler))
+                    if (wordSay.ContainsKey(word))
                     {
-                        kelimeSay[kelimeler]++;
+                        wordSay[word]++;
                     }
                     else
                     {
-                        kelimeSay.Add(kelimeler, 1);
+                        wordSay.Add(word, 1);
                     }
                 }
-                var sortedKelimeSay = kelimeSay.OrderByDescending(kv => kv.Value).ToList();
-                foreach (var item in sortedKelimeSay)
+                var sortedWordSay = wordSay.OrderByDescending(kv => kv.Value).ToList();
+                foreach (var item in sortedWordSay)
                 {
                     if (item.Value > 1)
                     {

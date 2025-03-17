@@ -11,17 +11,17 @@ namespace FileAnalyzer
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Methods m = new Methods();
-            m.girisEkran();
-            int secim = int.Parse(Console.ReadLine());
+            m.loginMenu();
+            int prefer = int.Parse(Console.ReadLine());
             Console.WriteLine("------------------------------");
 
-            string dosyaYolu = m.DosyaTercih(secim);
-            if (!string.IsNullOrEmpty(dosyaYolu))
+            string fileRoad = m.filePrefer(prefer);
+            if (!string.IsNullOrEmpty(fileRoad))
             {
                 Console.WriteLine("------------------------------");
-                m.toplamKelimeSay(dosyaYolu, secim);
+                m.totalWordSay(fileRoad, prefer);
                 Console.WriteLine("------------------------------");
-                m.kelimeSay(dosyaYolu, secim);
+                m.wordSay(fileRoad, prefer);
                 Console.WriteLine("------------------------------");
 
             }
